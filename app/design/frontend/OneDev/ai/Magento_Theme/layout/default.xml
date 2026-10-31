@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+    app/design/frontend/Acme/mytheme/Magento_Theme/layout/default.xml
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+        <referenceBlock name="logo">
+            <arguments>
+                <!-- path is relative to web/ -->
+                <argument name="logo_file" xsi:type="string">images/my-logo.png</argument>
+                <argument name="logo_alt"  xsi:type="string">OneDev Store</argument>
+                <argument name="logo_width"  xsi:type="string">250</argument>
+                <argument name="logo_height" xsi:type="string">60</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="copyright" remove="true"/>
+        <referenceBlock name="footer_links" remove="true"/>
+    </body>
+</page>

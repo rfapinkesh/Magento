@@ -1,0 +1,173 @@
+.icecube-aiagent-report {
+    font-size: 1.4rem;
+}
+.icecube-aiagent-report__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+.icecube-aiagent-report__periods {
+    display: flex;
+    gap: 0.4rem;
+}
+.icecube-aiagent-report__periods a {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid #adadad;
+    border-radius: 2px;
+    color: #303030;
+    text-decoration: none;
+}
+.icecube-aiagent-report__periods a.is-active {
+    background: #514943;
+    border-color: #514943;
+    color: #fff;
+}
+.icecube-aiagent-report__note {
+    color: #6d6d6d;
+    font-size: 1.25rem;
+}
+.icecube-aiagent-report__tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1.6rem;
+    margin-bottom: 2.4rem;
+}
+.icecube-aiagent-report__tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.6rem;
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+.icecube-aiagent-report__tile span {
+    color: #6d6d6d;
+}
+.icecube-aiagent-report__tile strong {
+    font-size: 2.6rem;
+    font-weight: 600;
+    color: #303030;
+}
+.icecube-aiagent-report__tile small {
+    color: #6d6d6d;
+}
+.icecube-aiagent-report__tile.is-accent {
+    border-color: #eb5202;
+    border-top-width: 3px;
+}
+.icecube-aiagent-report__section {
+    margin-bottom: 2.4rem;
+}
+.icecube-aiagent-report__section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.7rem;
+    font-weight: 600;
+}
+.icecube-aiagent-report__section .data-grid + h2 {
+    margin-top: 2.4rem;
+}
+.icecube-aiagent-report__bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14rem;
+    padding: 0.8rem;
+    border: 1px solid #e3e3e3;
+    background: #fff;
+}
+.icecube-aiagent-report__bar {
+    flex: 1 1 0;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+}
+.icecube-aiagent-report__bar span {
+    display: block;
+    width: 100%;
+    background: #eb5202;
+    border-radius: 2px 2px 0 0;
+}
+.icecube-aiagent-report__bar:hover span {
+    background: #c34500;
+}
+.icecube-aiagent-report__axis {
+    display: flex;
+    justify-content: space-between;
+    color: #6d6d6d;
+    font-size: 1.2rem;
+    margin-top: 0.4rem;
+}
+.icecube-aiagent-report__columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(42rem, 1fr));
+    gap: 2.4rem;
+}
+.icecube-aiagent-report .data-grid small {
+    display: block;
+    color: #6d6d6d;
+}
+.icecube-aiagent-report__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem 1.6rem;
+    align-items: flex-end;
+    padding: 1.6rem;
+    margin-bottom: 1.6rem;
+    border: 1px solid #e3e3e3;
+    background: #f8f8f8;
+}
+.icecube-aiagent-report__filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 15rem;
+}
+.icecube-aiagent-report__filters label.is-wide {
+    flex: 1 1 24rem;
+}
+.icecube-aiagent-report__actions {
+    display: flex;
+    gap: 0.8rem;
+}
+.icecube-aiagent-report__audit td {
+    vertical-align: top;
+}
+.icecube-aiagent-report__audit .is-nowrap {
+    white-space: nowrap;
+}
+.icecube-aiagent-report__audit tr.is-error td {
+    background: #fffbbb;
+}
+.icecube-aiagent-report__audit details summary {
+    cursor: pointer;
+    color: #007bdb;
+}
+.icecube-aiagent-report__audit pre {
+    max-height: 32rem;
+    max-width: 70rem;
+    overflow: auto;
+    margin: 0.4rem 0 1rem;
+    padding: 0.8rem;
+    background: #f8f8f8;
+    border: 1px solid #e3e3e3;
+    font-size: 1.2rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.icecube-aiagent-report__badge {
+    margin-left: 0.4rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: 1rem;
+    background: #e22626;
+    color: #fff;
+    font-size: 1.1rem;
+}
+.icecube-aiagent-report__pager {
+    display: flex;
+    gap: 1.6rem;
+    justify-content: center;
+    margin-top: 1.6rem;
+}

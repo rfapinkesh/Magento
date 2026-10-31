@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <icecube_aiagent>
+            <general>
+                <enabled>0</enabled>
+                <provider>openai</provider>
+                <timeout>60</timeout>
+            </general>
+            <openai>
+                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <model>gpt-5.6-sol</model>
+                <reasoning_effort>low</reasoning_effort>
+                <base_url>https://api.openai.com/v1</base_url>
+            </openai>
+            <anthropic>
+                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <model>claude-opus-5-5</model>
+                <effort>low</effort>
+                <base_url/>
+                <price_input>4</price_input>
+                <price_output>20</price_output>
+            </anthropic>
+            <groq>
+                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <model>llama-3.3-70b-versatile</model>
+                <base_url>https://api.groq.com/openai/v1</base_url>
+            </groq>
+            <agent>
+                <max_tool_calls>8</max_tool_calls>
+                <max_results>20</max_results>
+                <history_messages>12</history_messages>
+                <custom_instructions/>
+            </agent>
+            <tools>
+                <enabled_tools>search_orders,get_order_details,search_products,get_product_details,get_low_stock,get_customer,search_sales_documents,get_sales_report,get_best_sellers,get_abandoned_carts</enabled_tools>
+            </tools>
+            <privacy>
+                <mask_pii>1</mask_pii>
+                <rate_limit_per_hour>60</rate_limit_per_hour>
+                <retention_days>90</retention_days>
+            </privacy>
+        </icecube_aiagent>
+    </default>
+</config>

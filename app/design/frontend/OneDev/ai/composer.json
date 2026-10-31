@@ -1,0 +1,10 @@
+{
+    "name": "onedev/ai",
+    "description": "Onedev custom frontend theme",
+    "require": {
+        "php": "~7.4||~8.1",
+        "magento/theme-frontend-blank": "100.*"
+    },
+    "type": "magento2-theme",
+    "version": "1.0.0"
+}

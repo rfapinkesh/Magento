@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="icecube" translate="label" sortOrder="300">
+            <label>IceCube</label>
+        </tab>
+        <section id="icecube_aiagent" translate="label" type="text" sortOrder="10"
+                 showInDefault="1" showInWebsite="0" showInStore="0">
+            <class>separator-top</class>
+            <label>AI Agent</label>
+            <tab>icecube</tab>
+            <resource>IceCube_AiAgent::config</resource>
+
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1">
+                <label>General</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                    <label>Enable AI Assistant</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Adds the chat assistant at IceCube &gt; AI Agent &gt; AI Assistant. The assistant can only read store data.</comment>
+                </field>
+            </group>
+
+            <!-- One group so the provider dropdown can show/hide fields live; config_path keeps each provider's values under its own path. -->
+            <group id="connection" translate="label" type="text" sortOrder="20" showInDefault="1">
+                <label>AI Provider</label>
+                <field id="provider" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                    <label>AI Provider</label>
+                    <source_model>IceCube\AiAgent\Model\Config\Source\Provider</source_model>
+                    <config_path>icecube_aiagent/general/provider</config_path>
+                    <comment>The service that answers the questions. Only the settings of the selected provider are used.</comment>
+                </field>
+
+                <field id="openai_api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1">
+                    <label>OpenAI API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <config_path>icecube_aiagent/openai/api_key</config_path>
+                    <comment>Stored encrypted. Create a project key with access to the Responses API only.</comment>
+                    <depends>
+                        <field id="provider">openai</field>
+                    </depends>
+                </field>
+                <field id="openai_model" translate="label comment" type="text" sortOrder="21" showInDefault="1">
+                    <label>OpenAI Model</label>
+                    <validate>required-entry</validate>
+                    <config_path>icecube_aiagent/openai/model</config_path>
+                    <comment>OpenAI model ID, e.g. gpt-5.6-sol. Must support function calling in the Responses API.</comment>
+                    <depends>
+                        <field id="provider">openai</field>
+                    </depends>
+                </field>
+                <field id="openai_reasoning_effort" translate="label comment" type="select" sortOrder="22" showInDefault="1">
+                    <label>Reasoning Effort</label>
+                    <source_model>IceCube\AiAgent\Model\Config\Source\ReasoningEffort</source_model>
+                    <config_path>icecube_aiagent/openai/reasoning_effort</config_path>
+                    <comment>Low is fastest for lookups. Choose "Off" only for models without reasoning.</comment>
+                    <depends>
+                        <field id="provider">openai</field>
+                    </depends>
+                </field>
+                <field id="openai_base_url" translate="label comment" type="text" sortOrder="23" showInDefault="1">
+                    <label>OpenAI API Base URL</label>
+                    <validate>required-entry validate-url</validate>
+                    <config_path>icecube_aiagent/openai/base_url</config_path>
+                    <comment>Leave as https://api.openai.com/v1 unless you route through a proxy.</comment>
+                    <depends>
+                        <field id="provider">openai</field>
+                    </depends>
+                </field>
+
+                <field id="openai_price_input" translate="label comment" type="text" sortOrder="24" showInDefault="1">
+                    <label>OpenAI Input Price (per 1M tokens)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <config_path>icecube_aiagent/openai/price_input</config_path>
+                    <comment>Optional, in USD, for the usage dashboard's cost estimate. Use the price of the model above.</comment>
+                    <depends>
+                        <field id="provider">openai</field>
+                    </depends>
+                </field>
+                <field id="openai_price_output" translate="label comment" type="text" sortOrder="25" showInDefault="1">
+                    <label>OpenAI Output Price (per 1M tokens)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <config_path>icecube_aiagent/openai/price_output</config_path>
+                    <comment>Optional, in USD, for the usage dashboard's cost estimate. Use the price of the model above.</comment>
+                    <depends>
+                        <field id="provider">openai</field>
+                    </depends>
+                </field>
+
+                <field id="anthropic_api_key" translate="label comment" type="obscure" sortOrder="30" showInDefault="1">
+                    <label>Claude API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <config_path>icecube_aiagent/anthropic/api_key</config_path>
+                    <comment>Stored encrypted. Create a key at platform.claude.com (starts with sk-ant-). The account needs credits.</comment>
+                    <depends>
+                        <field id="provider">anthropic</field>
+                    </depends>
+                </field>
+                <field id="anthropic_model" translate="label comment" type="text" sortOrder="31" showInDefault="1">
+                    <label>Claude Model</label>
+                    <validate>required-entry</validate>
+                    <config_path>icecube_aiagent/anthropic/model</config_path>
+                    <comment>Claude model ID, e.g. claude-opus-5-5, claude-sonnet-5-5 or claude-haiku-5-5.</comment>
+                    <depends>
+                        <field id="provider">anthropic</field>
+                    </depends>
+                </field>
+                <field id="anthropic_effort" translate="label comment" type="select" sortOrder="32" showInDefault="1">
+                    <label>Effort</label>
+                    <source_model>IceCube\AiAgent\Model\Config\Source\ClaudeEffort</source_model>
+                    <config_path>icecube_aiagent/anthropic/effort</config_path>
+                    <comment>How much Claude thinks before answering. Low is fastest and enough for most lookups.</comment>
+                    <depends>
+                        <field id="provider">anthropic</field>
+                    </depends>
+                </field>
+                <field id="anthropic_base_url" translate="label comment" type="text" sortOrder="33" showInDefault="1">
+                    <label>Claude API Base URL</label>
+                    <validate>validate-url</validate>
+                    <config_path>icecube_aiagent/anthropic/base_url</config_path>
+                    <comment>Leave empty to use https://api.anthropic.com. Set only when routing through a proxy.</comment>
+                    <depends>
+                        <field id="provider">anthropic</field>
+                    </depends>
+                </field>
+
+                <field id="anthropic_price_input" translate="label comment" type="text" sortOrder="34" showInDefault="1">
+                    <label>Claude Input Price (per 1M tokens)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <config_path>icecube_aiagent/anthropic/price_input</config_path>
+                    <comment>Optional, in USD, for the usage dashboard's cost estimate. Use the price of the model above.</comment>
+                    <depends>
+                        <field id="provider">anthropic</field>
+                    </depends>
+                </field>
+                <field id="anthropic_price_output" translate="label comment" type="text" sortOrder="35" showInDefault="1">
+                    <label>Claude Output Price (per 1M tokens)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <config_path>icecube_aiagent/anthropic/price_output</config_path>
+                    <comment>Optional, in USD, for the usage dashboard's cost estimate. Use the price of the model above.</comment>
+                    <depends>
+                        <field id="provider">anthropic</field>
+                    </depends>
+                </field>
+
+                <field id="groq_api_key" translate="label comment" type="obscure" sortOrder="40" showInDefault="1">
+                    <label>Groq API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <config_path>icecube_aiagent/groq/api_key</config_path>
+                    <comment>Stored encrypted. Create a key at console.groq.com (starts with gsk_).</comment>
+                    <depends>
+                        <field id="provider">groq</field>
+                    </depends>
+                </field>
+                <field id="groq_model" translate="label comment" type="text" sortOrder="41" showInDefault="1">
+                    <label>Groq Model</label>
+                    <validate>required-entry</validate>
+                    <config_path>icecube_aiagent/groq/model</config_path>
+                    <comment>Groq model ID that supports tool use, e.g. llama-3.3-70b-versatile. See console.groq.com/docs/models.</comment>
+                    <depends>
+                        <field id="provider">groq</field>
+                    </depends>
+                </field>
+                <field id="groq_base_url" translate="label comment" type="text" sortOrder="42" showInDefault="1">
+                    <label>Groq API Base URL</label>
+                    <validate>required-entry validate-url</validate>
+                    <config_path>icecube_aiagent/groq/base_url</config_path>
+                    <comment>Leave as https://api.groq.com/openai/v1 unless you route through a proxy.</comment>
+                    <depends>
+                        <field id="provider">groq</field>
+                    </depends>
+                </field>
+
+                <field id="groq_price_input" translate="label comment" type="text" sortOrder="43" showInDefault="1">
+                    <label>Groq Input Price (per 1M tokens)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <config_path>icecube_aiagent/groq/price_input</config_path>
+                    <comment>Optional, in USD, for the usage dashboard's cost estimate. Use the price of the model above.</comment>
+                    <depends>
+                        <field id="provider">groq</field>
+                    </depends>
+                </field>
+                <field id="groq_price_output" translate="label comment" type="text" sortOrder="44" showInDefault="1">
+                    <label>Groq Output Price (per 1M tokens)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <config_path>icecube_aiagent/groq/price_output</config_path>
+                    <comment>Optional, in USD, for the usage dashboard's cost estimate. Use the price of the model above.</comment>
+                    <depends>
+                        <field id="provider">groq</field>
+                    </depends>
+                </field>
+
+                <field id="timeout" translate="label" type="text" sortOrder="90" showInDefault="1">
+                    <label>Request Timeout (seconds)</label>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                    <config_path>icecube_aiagent/general/timeout</config_path>
+                </field>
+            </group>
+
+            <group id="agent" translate="label" type="text" sortOrder="30" showInDefault="1">
+                <label>Agent Behaviour</label>
+                <field id="max_tool_calls" translate="label comment" type="text" sortOrder="10" showInDefault="1">
+                    <label>Max Tool Calls per Question</label>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-1-25</validate>
+                    <comment>After this many lookups the agent must answer with what it has.</comment>
+                </field>
+                <field id="max_results" translate="label comment" type="text" sortOrder="20" showInDefault="1">
+                    <label>Max Rows per Lookup</label>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-1-100</validate>
+                    <comment>Upper limit on orders, products or customers a single tool call returns.</comment>
+                </field>
+                <field id="history_messages" translate="label comment" type="text" sortOrder="30" showInDefault="1">
+                    <label>Previous Messages Sent as Context</label>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-0-50</validate>
+                    <comment>How many earlier messages in the same chat the agent remembers.</comment>
+                </field>
+                <field id="custom_instructions" translate="label comment" type="textarea" sortOrder="40" showInDefault="1">
+                    <label>Extra Instructions</label>
+                    <comment>Optional store-specific guidance added to the system prompt, e.g. "Order numbers start with 2000".</comment>
+                </field>
+            </group>
+
+            <group id="tools" translate="label" type="text" sortOrder="40" showInDefault="1">
+                <label>Tools</label>
+                <field id="enabled_tools" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1">
+                    <label>Enabled Tools</label>
+                    <source_model>IceCube\AiAgent\Model\Config\Source\Tools</source_model>
+                    <can_be_empty>1</can_be_empty>
+                    <comment>Each tool also respects the admin role: e.g. customer lookup needs the Customers &gt; All Customers permission.</comment>
+                </field>
+            </group>
+
+            <group id="privacy" translate="label" type="text" sortOrder="50" showInDefault="1">
+                <label>Privacy and Limits</label>
+                <field id="mask_pii" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                    <label>Mask Customer Personal Data</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Masks emails, phone numbers, street addresses and postcodes before data is sent to the AI provider.</comment>
+                </field>
+                <field id="rate_limit_per_hour" translate="label comment" type="text" sortOrder="20" showInDefault="1">
+                    <label>Questions per Admin per Hour</label>
+                    <validate>required-entry validate-digits</validate>
+                    <comment>0 = unlimited.</comment>
+                </field>
+                <field id="retention_days" translate="label comment" type="text" sortOrder="30" showInDefault="1">
+                    <label>Keep Chat History (days)</label>
+                    <validate>required-entry validate-digits</validate>
+                    <comment>Chats not updated for this many days are deleted by a nightly cron. 0 = keep forever.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="IceCube_AiAgent::root" title="IceCube" translate="title" module="IceCube_AiAgent"
+             sortOrder="85" resource="IceCube_AiAgent::chat"/>
+        <add id="IceCube_AiAgent::group" title="AI Agent" translate="title" module="IceCube_AiAgent"
+             sortOrder="10" parent="IceCube_AiAgent::root" resource="IceCube_AiAgent::chat"/>
+        <add id="IceCube_AiAgent::chat" title="AI Assistant" translate="title" module="IceCube_AiAgent"
+             sortOrder="10" parent="IceCube_AiAgent::group" action="icecube_aiagent/chat/index"
+             resource="IceCube_AiAgent::chat"/>
+        <add id="IceCube_AiAgent::usage" title="Usage Dashboard" translate="title" module="IceCube_AiAgent"
+             sortOrder="12" parent="IceCube_AiAgent::group" action="icecube_aiagent/usage/index"
+             resource="IceCube_AiAgent::usage"/>
+        <add id="IceCube_AiAgent::audit" title="Audit Log" translate="title" module="IceCube_AiAgent"
+             sortOrder="14" parent="IceCube_AiAgent::group" action="icecube_aiagent/audit/index"
+             resource="IceCube_AiAgent::audit"/>
+        <add id="IceCube_AiAgent::settings" title="Settings" translate="title" module="IceCube_AiAgent"
+             sortOrder="20" parent="IceCube_AiAgent::group"
+             action="adminhtml/system_config/edit/section/icecube_aiagent"
+             resource="IceCube_AiAgent::config"/>
+    </menu>
+</config>

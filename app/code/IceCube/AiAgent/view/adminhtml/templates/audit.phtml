@@ -1,0 +1,109 @@
+<?php
+/**
+ * @var \IceCube\AiAgent\Block\Adminhtml\Audit $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$values = $block->getValues();
+$result = $block->getResult();
+$page = $block->getPage();
+$pages = $block->getPageCount();
+?>
+<div class="icecube-aiagent-report">
+    <form class="icecube-aiagent-report__filters" method="get" action="<?= $escaper->escapeUrl($block->getFilterUrl()) ?>">
+        <label>
+            <span><?= $escaper->escapeHtml(__('Admin user')) ?></span>
+            <select name="admin_user_id" class="admin__control-select">
+                <option value=""><?= $escaper->escapeHtml(__('All')) ?></option>
+                <?php foreach ($block->getAdminUsers() as $id => $username): ?>
+                    <option value="<?= (int)$id ?>" <?= (string)$id === $values['admin_user_id'] ? 'selected' : '' ?>>
+                        <?= $escaper->escapeHtml($username) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </label>
+        <label>
+            <span><?= $escaper->escapeHtml(__('Tool')) ?></span>
+            <select name="tool_name" class="admin__control-select">
+                <option value=""><?= $escaper->escapeHtml(__('All')) ?></option>
+                <?php foreach ($block->getToolNames() as $tool): ?>
+                    <option value="<?= $escaper->escapeHtmlAttr($tool) ?>" <?= $tool === $values['tool_name'] ? 'selected' : '' ?>>
+                        <?= $escaper->escapeHtml($tool) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </label>
+        <label>
+            <span><?= $escaper->escapeHtml(__('From')) ?></span>
+            <input type="date" name="date_from" class="admin__control-text"
+                   value="<?= $escaper->escapeHtmlAttr($values['date_from']) ?>">
+        </label>
+        <label>
+            <span><?= $escaper->escapeHtml(__('To')) ?></span>
+            <input type="date" name="date_to" class="admin__control-text"
+                   value="<?= $escaper->escapeHtmlAttr($values['date_to']) ?>">
+        </label>
+        <label class="is-wide">
+            <span><?= $escaper->escapeHtml(__('Search arguments and results')) ?></span>
+            <input type="search" name="search" class="admin__control-text"
+                   value="<?= $escaper->escapeHtmlAttr($values['search']) ?>"
+                   placeholder="<?= $escaper->escapeHtmlAttr(__('e.g. an order number or SKU')) ?>">
+        </label>
+        <div class="icecube-aiagent-report__actions">
+            <button type="submit" class="action-primary"><span><?= $escaper->escapeHtml(__('Apply')) ?></span></button>
+            <a class="action-default" href="<?= $escaper->escapeUrl($block->getFilterUrl()) ?>"><?= $escaper->escapeHtml(__('Reset')) ?></a>
+            <a class="action-secondary" href="<?= $escaper->escapeUrl($block->getExportUrl()) ?>"><?= $escaper->escapeHtml(__('Export CSV')) ?></a>
+        </div>
+    </form>
+
+    <p class="icecube-aiagent-report__note">
+        <?= $escaper->escapeHtml(__('%1 tool calls found. Results are stored masked, cut to 4,000 characters.', $result['total'])) ?>
+    </p>
+
+    <table class="data-grid icecube-aiagent-report__audit">
+        <thead><tr>
+            <th class="data-grid-th"><?= $escaper->escapeHtml(__('Time')) ?></th>
+            <th class="data-grid-th"><?= $escaper->escapeHtml(__('Admin')) ?></th>
+            <th class="data-grid-th"><?= $escaper->escapeHtml(__('Question')) ?></th>
+            <th class="data-grid-th"><?= $escaper->escapeHtml(__('Tool')) ?></th>
+            <th class="data-grid-th"><?= $escaper->escapeHtml(__('Details')) ?></th>
+        </tr></thead>
+        <tbody>
+        <?php if (!$result['rows']): ?>
+            <tr><td colspan="5"><?= $escaper->escapeHtml(__('No tool calls match these filters.')) ?></td></tr>
+        <?php endif; ?>
+        <?php foreach ($result['rows'] as $row): ?>
+            <?php $isError = str_starts_with((string)$row['content'], '{"error"'); ?>
+            <tr class="<?= $isError ? 'is-error' : '' ?>">
+                <td class="is-nowrap"><?= $escaper->escapeHtml($block->localDate($row['created_at'])) ?></td>
+                <td><?= $escaper->escapeHtml($row['username'] ?: ('#' . $row['admin_user_id'])) ?></td>
+                <td><?= $escaper->escapeHtml($block->shorten($row['question'])) ?></td>
+                <td class="is-nowrap">
+                    <?= $escaper->escapeHtml($row['tool_name']) ?>
+                    <?php if ($isError): ?><span class="icecube-aiagent-report__badge"><?= $escaper->escapeHtml(__('error')) ?></span><?php endif; ?>
+                </td>
+                <td>
+                    <details>
+                        <summary><?= $escaper->escapeHtml($block->shorten($row['tool_args'], 80)) ?></summary>
+                        <strong><?= $escaper->escapeHtml(__('Arguments')) ?></strong>
+                        <pre><?= $escaper->escapeHtml($block->prettyJson($row['tool_args'])) ?></pre>
+                        <strong><?= $escaper->escapeHtml(__('Result (masked)')) ?></strong>
+                        <pre><?= $escaper->escapeHtml($block->prettyJson($row['content'])) ?></pre>
+                    </details>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <?php if ($pages > 1): ?>
+        <nav class="icecube-aiagent-report__pager">
+            <?php if ($page > 1): ?>
+                <a href="<?= $escaper->escapeUrl($block->getPageUrl($page - 1)) ?>"><?= $escaper->escapeHtml(__('Previous')) ?></a>
+            <?php endif; ?>
+            <span><?= $escaper->escapeHtml(__('Page %1 of %2', $page, $pages)) ?></span>
+            <?php if ($page < $pages): ?>
+                <a href="<?= $escaper->escapeUrl($block->getPageUrl($page + 1)) ?>"><?= $escaper->escapeHtml(__('Next')) ?></a>
+            <?php endif; ?>
+        </nav>
+    <?php endif; ?>
+</div>

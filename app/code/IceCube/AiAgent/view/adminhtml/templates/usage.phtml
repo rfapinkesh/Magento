@@ -1,0 +1,166 @@
+<?php
+/**
+ * @var \IceCube\AiAgent\Block\Adminhtml\Usage $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$summary = $block->getSummary();
+$daily = $block->getDaily();
+$maxQuestions = max(1, ...array_map(fn($d) => (int)$d['questions'], $daily));
+$byModel = $block->getByModel();
+$byAdmin = $block->getByAdmin();
+$byTool = $block->getByTool();
+?>
+<div class="icecube-aiagent-report">
+    <div class="icecube-aiagent-report__toolbar">
+        <div class="icecube-aiagent-report__periods">
+            <?php foreach ($block::PERIODS as $days): ?>
+                <a href="<?= $escaper->escapeUrl($block->getPeriodUrl($days)) ?>"
+                   class="<?= $days === $block->getDays() ? 'is-active' : '' ?>">
+                    <?= $escaper->escapeHtml(__('Last %1 days', $days)) ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <div class="icecube-aiagent-report__note">
+            <?= $escaper->escapeHtml(__('Active provider: %1', $block->getActiveProviderLabel())) ?>
+        </div>
+    </div>
+
+    <div class="icecube-aiagent-report__tiles">
+        <div class="icecube-aiagent-report__tile">
+            <span><?= $escaper->escapeHtml(__('Questions')) ?></span>
+            <strong><?= $escaper->escapeHtml($block->formatNumber($summary['questions'])) ?></strong>
+            <small><?= $escaper->escapeHtml(__('%1 chats', $block->formatNumber($summary['chats']))) ?></small>
+        </div>
+        <div class="icecube-aiagent-report__tile">
+            <span><?= $escaper->escapeHtml(__('Active admins')) ?></span>
+            <strong><?= $escaper->escapeHtml($block->formatNumber($summary['admins'])) ?></strong>
+        </div>
+        <div class="icecube-aiagent-report__tile">
+            <span><?= $escaper->escapeHtml(__('Lookups (tool calls)')) ?></span>
+            <strong><?= $escaper->escapeHtml($block->formatNumber($summary['tool_calls'])) ?></strong>
+        </div>
+        <div class="icecube-aiagent-report__tile">
+            <span><?= $escaper->escapeHtml(__('Tokens in / out')) ?></span>
+            <strong><?= $escaper->escapeHtml($block->formatNumber($summary['input_tokens'])) ?></strong>
+            <small><?= $escaper->escapeHtml(__('%1 out', $block->formatNumber($summary['output_tokens']))) ?></small>
+        </div>
+        <div class="icecube-aiagent-report__tile is-accent">
+            <span><?= $escaper->escapeHtml(__('Estimated cost')) ?></span>
+            <strong><?= $escaper->escapeHtml($block->formatCost($summary['cost'])) ?></strong>
+            <?php if (!$summary['cost_complete']): ?>
+                <small>
+                    <?= $escaper->escapeHtml(__('Some answers have no price set.')) ?>
+                    <a href="<?= $escaper->escapeUrl($block->getSettingsUrl()) ?>"><?= $escaper->escapeHtml(__('Set prices')) ?></a>
+                </small>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <section class="icecube-aiagent-report__section">
+        <h2><?= $escaper->escapeHtml(__('Questions per day')) ?></h2>
+        <div class="icecube-aiagent-report__bars" role="img"
+             aria-label="<?= $escaper->escapeHtmlAttr(__('Questions per day')) ?>">
+            <?php foreach ($daily as $day): ?>
+                <?php $height = (int)round((int)$day['questions'] / $maxQuestions * 100); ?>
+                <div class="icecube-aiagent-report__bar"
+                     title="<?= $escaper->escapeHtmlAttr(__('%1: %2 questions, %3 lookups', $day['day'], (int)$day['questions'], (int)$day['tool_calls'])) ?>">
+                    <span style="height: <?= (int)max($height, (int)$day['questions'] > 0 ? 2 : 0) ?>%"></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="icecube-aiagent-report__axis">
+            <span><?= $escaper->escapeHtml($daily[0]['day'] ?? '') ?></span>
+            <span><?= $escaper->escapeHtml(__('max %1 / day', $maxQuestions)) ?></span>
+            <span><?= $escaper->escapeHtml($daily[count($daily) - 1]['day'] ?? '') ?></span>
+        </div>
+    </section>
+
+    <div class="icecube-aiagent-report__columns">
+        <section class="icecube-aiagent-report__section">
+            <h2><?= $escaper->escapeHtml(__('By admin user')) ?></h2>
+            <table class="data-grid">
+                <thead><tr>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Admin')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Questions')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Lookups')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Tokens')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Last question')) ?></th>
+                </tr></thead>
+                <tbody>
+                <?php if (!$byAdmin): ?>
+                    <tr><td colspan="5"><?= $escaper->escapeHtml(__('No questions in this period.')) ?></td></tr>
+                <?php endif; ?>
+                <?php foreach ($byAdmin as $row): ?>
+                    <tr>
+                        <td>
+                            <a href="<?= $escaper->escapeUrl($block->getAuditUrl(['_query' => ['admin_user_id' => $row['admin_user_id']]])) ?>">
+                                <?= $escaper->escapeHtml($row['username'] ?: ('#' . $row['admin_user_id'])) ?>
+                            </a>
+                            <small><?= $escaper->escapeHtml(trim($row['firstname'] . ' ' . $row['lastname'])) ?></small>
+                        </td>
+                        <td><?= (int)$row['questions'] ?></td>
+                        <td><?= (int)$row['tool_calls'] ?></td>
+                        <td><?= $escaper->escapeHtml($block->formatNumber((int)$row['input_tokens'] + (int)$row['output_tokens'])) ?></td>
+                        <td><?= $escaper->escapeHtml($block->localDate($row['last_question'])) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="icecube-aiagent-report__section">
+            <h2><?= $escaper->escapeHtml(__('By provider and model')) ?></h2>
+            <table class="data-grid">
+                <thead><tr>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Provider / model')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Answers')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Tokens in')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Tokens out')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Est. cost')) ?></th>
+                </tr></thead>
+                <tbody>
+                <?php if (!$byModel): ?>
+                    <tr><td colspan="5"><?= $escaper->escapeHtml(__('No answers in this period.')) ?></td></tr>
+                <?php endif; ?>
+                <?php foreach ($byModel as $row): ?>
+                    <tr>
+                        <td><?= $escaper->escapeHtml(($row['provider'] ?: __('unknown (before tracking)')) . ($row['model'] ? ' / ' . $row['model'] : '')) ?></td>
+                        <td><?= (int)$row['answers'] ?></td>
+                        <td><?= $escaper->escapeHtml($block->formatNumber((int)$row['input_tokens'])) ?></td>
+                        <td><?= $escaper->escapeHtml($block->formatNumber((int)$row['output_tokens'])) ?></td>
+                        <td><?= $escaper->escapeHtml($block->formatCost($row['cost'])) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <h2><?= $escaper->escapeHtml(__('Most used lookups')) ?></h2>
+            <table class="data-grid">
+                <thead><tr>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Tool')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Calls')) ?></th>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml(__('Errors')) ?></th>
+                </tr></thead>
+                <tbody>
+                <?php if (!$byTool): ?>
+                    <tr><td colspan="3"><?= $escaper->escapeHtml(__('No lookups in this period.')) ?></td></tr>
+                <?php endif; ?>
+                <?php foreach ($byTool as $row): ?>
+                    <tr>
+                        <td>
+                            <a href="<?= $escaper->escapeUrl($block->getAuditUrl(['_query' => ['tool_name' => $row['tool_name']]])) ?>">
+                                <?= $escaper->escapeHtml($row['tool_name']) ?>
+                            </a>
+                        </td>
+                        <td><?= (int)$row['calls'] ?></td>
+                        <td><?= (int)$row['errors'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <p class="icecube-aiagent-report__note">
+        <?= $escaper->escapeHtml(__('Cost is an estimate from the token prices in the AI Agent settings; your provider\'s invoice is the real figure. Chats deleted by the retention cron no longer count.')) ?>
+    </p>
+</div>

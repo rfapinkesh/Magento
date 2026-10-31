@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="icecube_aiagent_conversation" resource="default" engine="innodb" comment="IceCube AI Agent Conversations">
+        <column xsi:type="int" name="conversation_id" unsigned="true" nullable="false" identity="true" comment="Conversation ID"/>
+        <column xsi:type="int" name="admin_user_id" unsigned="true" nullable="false" identity="false" comment="Admin User ID"/>
+        <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Title"/>
+        <column xsi:type="datetime" name="created_at" on_update="false" nullable="false" comment="Created At (UTC)"/>
+        <column xsi:type="datetime" name="updated_at" on_update="false" nullable="false" comment="Updated At (UTC)"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="conversation_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ICECUBE_AIAGENT_CONVERSATION_ADMIN_USER_ID_ADMIN_USER_USER_ID"
+                    table="icecube_aiagent_conversation" column="admin_user_id"
+                    referenceTable="admin_user" referenceColumn="user_id" onDelete="CASCADE"/>
+        <index referenceId="ICECUBE_AIAGENT_CONVERSATION_ADMIN_USER_ID_UPDATED_AT" indexType="btree">
+            <column name="admin_user_id"/>
+            <column name="updated_at"/>
+        </index>
+        <index referenceId="ICECUBE_AIAGENT_CONVERSATION_UPDATED_AT" indexType="btree">
+            <column name="updated_at"/>
+        </index>
+    </table>
+
+    <table name="icecube_aiagent_message" resource="default" engine="innodb" comment="IceCube AI Agent Messages and Audit Log">
+        <column xsi:type="int" name="message_id" unsigned="true" nullable="false" identity="true" comment="Message ID"/>
+        <column xsi:type="int" name="conversation_id" unsigned="true" nullable="false" identity="false" comment="Conversation ID"/>
+        <column xsi:type="varchar" name="role" nullable="false" length="16" comment="user, assistant or tool"/>
+        <column xsi:type="mediumtext" name="content" nullable="true" comment="Message text or masked tool output"/>
+        <column xsi:type="varchar" name="tool_name" nullable="true" length="128" comment="Tool Name"/>
+        <column xsi:type="text" name="tool_args" nullable="true" comment="Tool Arguments (JSON)"/>
+        <column xsi:type="int" name="input_tokens" unsigned="true" nullable="true" identity="false" comment="Input Tokens"/>
+        <column xsi:type="int" name="output_tokens" unsigned="true" nullable="true" identity="false" comment="Output Tokens"/>
+        <column xsi:type="varchar" name="provider" nullable="true" length="32" comment="AI provider code (assistant rows)"/>
+        <column xsi:type="varchar" name="model" nullable="true" length="128" comment="Model ID (assistant rows)"/>
+        <column xsi:type="datetime" name="created_at" on_update="false" nullable="false" comment="Created At (UTC)"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="message_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ICECUBE_AIAGENT_MESSAGE_CONVERSATION_ID_ICECUBE_AIAGENT_CONVERSATION_CONVERSATION_ID"
+                    table="icecube_aiagent_message" column="conversation_id"
+                    referenceTable="icecube_aiagent_conversation" referenceColumn="conversation_id" onDelete="CASCADE"/>
+        <index referenceId="ICECUBE_AIAGENT_MESSAGE_CONVERSATION_ID" indexType="btree">
+            <column name="conversation_id"/>
+        </index>
+        <index referenceId="ICECUBE_AIAGENT_MESSAGE_ROLE_CREATED_AT" indexType="btree">
+            <column name="role"/>
+            <column name="created_at"/>
+        </index>
+    </table>
+</schema>

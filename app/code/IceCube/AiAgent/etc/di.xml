@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Register read-only tools here. Add a new tool by implementing ToolInterface and adding it to this list. -->
+    <type name="IceCube\AiAgent\Model\ToolRegistry">
+        <arguments>
+            <argument name="tools" xsi:type="array">
+                <item name="search_orders" xsi:type="object">IceCube\AiAgent\Model\Tool\SearchOrders</item>
+                <item name="get_order_details" xsi:type="object">IceCube\AiAgent\Model\Tool\GetOrderDetails</item>
+                <item name="search_products" xsi:type="object">IceCube\AiAgent\Model\Tool\SearchProducts</item>
+                <item name="get_product_details" xsi:type="object">IceCube\AiAgent\Model\Tool\GetProductDetails</item>
+                <item name="get_low_stock" xsi:type="object">IceCube\AiAgent\Model\Tool\GetLowStock</item>
+                <item name="get_customer" xsi:type="object">IceCube\AiAgent\Model\Tool\GetCustomer</item>
+                <item name="search_sales_documents" xsi:type="object">IceCube\AiAgent\Model\Tool\SearchSalesDocuments</item>
+                <item name="get_sales_report" xsi:type="object">IceCube\AiAgent\Model\Tool\GetSalesReport</item>
+                <item name="get_best_sellers" xsi:type="object">IceCube\AiAgent\Model\Tool\GetBestSellers</item>
+                <item name="get_abandoned_carts" xsi:type="object">IceCube\AiAgent\Model\Tool\GetAbandonedCarts</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="IceCube\AiAgent\Model\ProviderPool">
+        <arguments>
+            <argument name="providers" xsi:type="array">
+                <item name="openai" xsi:type="object">IceCube\AiAgent\Model\Provider\OpenAi</item>
+                <item name="anthropic" xsi:type="object">IceCube\AiAgent\Model\Provider\Claude</item>
+                <item name="groq" xsi:type="object">IceCube\AiAgent\Model\Provider\Groq</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

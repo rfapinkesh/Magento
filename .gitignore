@@ -1,0 +1,31 @@
+# Magento sensitive configuration
+/app/etc/env.php
+/auth.json
+
+# Magento generated files
+/generated/*
+/var/*
+/pub/static/*
+/pub/media/*
+
+# Composer dependencies
+/vendor/
+
+# Node dependencies
+/node_modules/
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs and cache
+*.log
+*.cache
+
+# Database backups
+*.sql
+*.sql.gz
+
+# Environment files
+.env
+.env.*

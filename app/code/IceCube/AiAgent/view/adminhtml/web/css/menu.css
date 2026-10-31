@@ -1,0 +1,10 @@
+/* Icon for the top-level "IceCube" admin menu item */
+#menu-icecube-aiagent-root > a::before,
+[data-ui-id="menu-icecube-aiagent-root"] > a::before {
+    content: 'AI';
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 2.2rem;
+}

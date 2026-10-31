@@ -1,0 +1,59 @@
+<?php
+/**
+ * @var \IceCube\AiAgent\Block\Adminhtml\Chat $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$warnings = $block->getWarnings();
+?>
+<?php if ($warnings): ?>
+    <div class="messages">
+        <div class="message message-warning warning">
+            <div>
+                <?php foreach ($warnings as $warning): ?>
+                    <?= $escaper->escapeHtml($warning) ?>
+                <?php endforeach; ?>
+                <?php if ($block->canEditSettings()): ?>
+                    <a href="<?= $escaper->escapeUrl($block->getSettingsUrl()) ?>">
+                        <?= $escaper->escapeHtml(__('Open AI Agent settings')) ?>
+                    </a>
+                <?php else: ?>
+                    <?= $escaper->escapeHtml(__('Ask an administrator to check the AI Agent settings.')) ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="icecube-aiagent" data-role="icecube-aiagent"
+     data-mage-init="<?= $escaper->escapeHtmlAttr($block->getMageInit(), false) ?>">
+    <aside class="icecube-aiagent__sidebar">
+        <button type="button" class="action-primary icecube-aiagent__new" data-role="new-chat">
+            <span><?= $escaper->escapeHtml(__('New chat')) ?></span>
+        </button>
+        <div class="icecube-aiagent__history-title"><?= $escaper->escapeHtml(__('Recent chats')) ?></div>
+        <ul class="icecube-aiagent__history" data-role="history"></ul>
+    </aside>
+
+    <section class="icecube-aiagent__main">
+        <div class="icecube-aiagent__messages" data-role="messages" aria-live="polite">
+            <div class="icecube-aiagent__welcome" data-role="welcome">
+                <h2><?= $escaper->escapeHtml(__('Ask about your store')) ?></h2>
+                <p><?= $escaper->escapeHtml(__('The assistant looks up live orders, sales figures, best sellers, products, stock, carts, customers, invoices, shipments and refunds. It can read data but never change it.')) ?></p>
+                <div class="icecube-aiagent__examples" data-role="examples"></div>
+                <div class="icecube-aiagent__tools" data-role="tools"></div>
+            </div>
+        </div>
+
+        <form class="icecube-aiagent__composer" data-role="composer" autocomplete="off">
+            <textarea data-role="input" rows="2"
+                      placeholder="<?= $escaper->escapeHtmlAttr(__('Ask a question, e.g. "Which orders are still pending from last week?"')) ?>"
+                      aria-label="<?= $escaper->escapeHtmlAttr(__('Your question')) ?>"></textarea>
+            <button type="submit" class="action-primary" data-role="send">
+                <span><?= $escaper->escapeHtml(__('Send')) ?></span>
+            </button>
+        </form>
+        <div class="icecube-aiagent__hint">
+            <?= $escaper->escapeHtml(__('Enter to send, Shift+Enter for a new line. Answers come from live store data and can still contain mistakes.')) ?>
+        </div>
+    </section>
+</div>
